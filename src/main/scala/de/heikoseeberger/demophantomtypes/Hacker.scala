@@ -31,12 +31,12 @@ object Hacker {
 class Hacker[S <: Hacker.State] private {
   import Hacker._
 
-  def hackOn[T >: S <: State.Caffeinated]: Hacker[State.Decaffeinated] = {
+  def hackOn(implicit ev: S =:= State.Caffeinated): Hacker[State.Decaffeinated] = {
     println("Hacking, hacking, hacking!")
     new Hacker
   }
 
-  def drinkCoffee[T >: S <: State.Decaffeinated]: Hacker[State.Caffeinated] = {
+  def drinkCoffee(implicit ev: S =:= State.Decaffeinated): Hacker[State.Caffeinated] = {
     println("Slurp ...")
     new Hacker
   }

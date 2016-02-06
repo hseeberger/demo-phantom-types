@@ -23,6 +23,12 @@ object Hacker {
     sealed trait Caffeinated extends State
     sealed trait Decaffeinated extends State
   }
+  
+  @implicitNotFound("This hacker is in dire need of coffee!")
+  type IsCaffeinated[S <: State] = S =:= State.Caffeinated
+
+  @implicitNotFound("This hacker already had coffee and needs to do some hacking first.")
+  type IsDecaffeinated[S <: State] = S =:= State.Decaffeinated
 
   def caffeinated: Hacker[State.Caffeinated] = new Hacker
   def decaffeinated: Hacker[State.Decaffeinated] = new Hacker
@@ -31,12 +37,12 @@ object Hacker {
 class Hacker[S <: Hacker.State] private {
   import Hacker._
 
-  def hackOn(implicit ev: S =:= State.Caffeinated): Hacker[State.Decaffeinated] = {
+  def hackOn(implicit ev: IsCaffeinated[S]): Hacker[State.Decaffeinated] = {
     println("Hacking, hacking, hacking!")
     new Hacker
   }
 
-  def drinkCoffee(implicit ev: S =:= State.Decaffeinated): Hacker[State.Caffeinated] = {
+  def drinkCoffee(implicit ev: IsDecaffeinated[S]): Hacker[State.Caffeinated] = {
     println("Slurp ...")
     new Hacker
   }

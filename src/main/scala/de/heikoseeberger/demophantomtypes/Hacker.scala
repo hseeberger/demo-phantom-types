@@ -16,19 +16,21 @@
 
 package de.heikoseeberger.demophantomtypes
 
+import scala.annotation.implicitNotFound
+
 object Hacker {
+
+  @implicitNotFound("This hacker is in dire need of coffee!")
+  type IsCaffeinated[S] = S =:= State.Caffeinated
+
+  @implicitNotFound("This hacker already had coffee and needs to do some hacking first!")
+  type IsDecaffeinated[S] = S =:= State.Decaffeinated
 
   sealed trait State
   object State {
     sealed trait Caffeinated extends State
     sealed trait Decaffeinated extends State
   }
-  
-  @implicitNotFound("This hacker is in dire need of coffee!")
-  type IsCaffeinated[S <: State] = S =:= State.Caffeinated
-
-  @implicitNotFound("This hacker already had coffee and needs to do some hacking first.")
-  type IsDecaffeinated[S <: State] = S =:= State.Decaffeinated
 
   def caffeinated: Hacker[State.Caffeinated] = new Hacker
   def decaffeinated: Hacker[State.Decaffeinated] = new Hacker
